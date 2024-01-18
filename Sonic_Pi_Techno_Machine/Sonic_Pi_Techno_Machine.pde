@@ -11,7 +11,7 @@ NetAddress sonicPi;               // NetAddress is created for OscP5 to
 ControlP5 cp5;                    // ControlP5 is used to create the user interface for this sketch
 
 boolean enableComms = true;       // This boolean enables the OSC communication from this patch
-boolean enable3DLogo = true;      // Boolean toggle to enable / disable spinning Mehackit 3D logo
+boolean enable3DLogo = false;      // Boolean toggle to enable / disable spinning Mehackit 3D logo
 boolean enableLineGFX = true;     // Boolean toggle to enable / disable transparent moving lines animation
 boolean debugMessages = false;    // If enabled, prints outgoing OSC messages to terminal
 
@@ -34,7 +34,7 @@ void setup() {
   smooth();    
   
   oscP5 = new OscP5(this, 8000);                  // Initializing this processing to listen to OSC messages
-  sonicPi = new NetAddress("127.0.0.1",4559);     // and send them locally to Sonic Pi using port 4559 
+  sonicPi = new NetAddress("127.0.0.1",4560);     // and send them locally to Sonic Pi using port 4559 
   
   logo = loadShape("data/mehackit.obj");          // Loads the 3D Mehackit logo shape
   logo.disableStyle();
@@ -334,6 +334,7 @@ void beatC(boolean state) {
     sendOscDualMessage("drum3", 0, 0);    
   }
 }
+
 void beatD(boolean state) {
   if (enableComms && state) {
     sendOscDualMessage("drum4", 0, 1); // Perc / FM Toggle
