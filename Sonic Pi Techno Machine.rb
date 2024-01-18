@@ -1,7 +1,7 @@
 #  THE SONIC PI TECHNO MACHINE -- MADE BY MEHACKIT - 2018  #
 #  WORKS WITH SONIC PI 3.1.0 AND PROCESSING 3.3.6+ :----)  #
 
-use_bpm 100 # SET THE TEMPO OF YOUR LIVE SET HERE
+use_bpm 120 # SET THE TEMPO OF YOUR LIVE SET HERE
 use_debug false
 beat1Cutoff = 0
 beat1Vol = 1.0
@@ -28,7 +28,9 @@ synthWaveform = :tb303
 synth2Waveform = :saw
 synth2Volume = 0
 synth2Transpose = 0
+
 nuotit = [:r, :r, :r, :r, :r, :r, :r, :r]
+
 kickSample = :bd_haus
 hihatSample = :drum_cymbal_closed
 beat1Sample = :loop_amen
@@ -54,7 +56,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
       end
       
       live_loop :beat1OSC do
-        osc=sync "/osc/drum1"
+        osc=sync "/osc*/drum1"
         if (osc[0] == 0)
           if (osc[1] == 0)
             beat1Cutoff = 0
@@ -80,7 +82,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
     end
     
     live_loop :drumReverbOSC do
-      osc=sync "/osc/drumreverb"
+      osc=sync "/osc*/drumreverb"
       drumReverb = osc[0]
       control drumReverbAmount, room: drumReverb, mix: drumReverb/2
     end
@@ -91,7 +93,8 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
       live_loop :perc, sync: :kickdrum do
         use_synth :fm
         if (percVol == 1)
-          play nuotit.choose, pan: rrand(-0.8,0.8), amp: percVol, attack: 0.03, divisor: rrand(0.1, 2.4), depth: rrand(1,5), release: percDecay + rrand(0, 0.1) if (percToggle == 1)
+          nuo = nuotit.dup
+          play nuo.choose, pan: rrand(-0.8,0.8), amp: percVol, attack: 0.03, divisor: rrand(0.1, 2.4), depth: rrand(1,5), release: percDecay + rrand(0, 0.1) if (percToggle == 1)
         end
         sleep [0.25, 0.75, 1.25].choose
       end
@@ -121,8 +124,8 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
             synthVol = 1
           end
           use_transpose 0
-          
-          play nuotit.ring.tick, amp: synthVol, attack: synthAttack, release: synthRelease, cutoff: synthCutoff, res: synthResonance
+          nuo = nuotit.dup
+          play nuo.ring.tick, amp: synthVol, attack: synthAttack, release: synthRelease, cutoff: synthCutoff, res: synthResonance
           
           # OSCILLATOR 2
           
@@ -132,7 +135,8 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
                 use_transpose 0
                 use_transpose 12 if one_in(6)
                 use_transpose 24 if one_in(12)
-                play nuotit.ring.look + synth2Transpose, amp: synth2Volume*synthVol,pan: rrand(-1,1), attack: synthAttack, release: synthRelease if (synth2Volume != 0)
+                nuo = nuotit.dup
+                play nuo.ring.look + synth2Transpose, amp: synth2Volume*synthVol,pan: rrand(-1,1), attack: synthAttack, release: synthRelease if (synth2Volume != 0)
               end
             end
           end
@@ -147,7 +151,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   ###############################################
   
   live_loop :kickdrumOSC do
-    osc=sync "/osc/drum2"
+    osc=sync "/osc*/drum2"
     if (osc[0] == 0)
       if (osc[1] == 0)
         kickToggle = 0
@@ -183,7 +187,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   end
   
   live_loop :hihatOSC do
-    osc=sync "/osc/drum3"
+    osc=sync "/osc*/drum3"
     if (osc[0] == 0)
       if (osc[1] == 0)
         hihatToggle = 0
@@ -200,7 +204,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   end
   
   live_loop :percOSC do
-    osc=sync "/osc/drum4"
+    osc=sync "/osc*/drum4"
     if (osc[0] == 0)
       if (osc[1] == 0)
         percToggle = 0
@@ -215,7 +219,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   end
   
   live_loop :synthOSC do
-    osc=sync "/osc/synth"
+    osc=sync "/osc*/synth"
     if (osc[0] == 0)
       synthCutoff = osc[1]
     elsif (osc[0] == 1)
@@ -236,7 +240,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   end
   
   live_loop :waveform1OSC do
-    osc=sync "/osc/waveform1"
+    osc=sync "/osc*/waveform1"
     if (osc[0] == 0)
       synthWaveform = :tb303
     elsif (osc[0] == 1)
@@ -249,7 +253,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   end
   
   live_loop :waveform2OSC do
-    osc=sync "/osc/waveform2"
+    osc=sync "/osc*/waveform2"
     if (osc[0] == 0)
       synth2Waveform = :saw
     elsif (osc[0] == 1)
@@ -260,7 +264,7 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   end
   
   live_loop :drumPatternOSC do
-    osc=sync "/osc/pattern"
+    osc=sync "/osc*/pattern"
     if (osc[0] == 0)
       kickPattern = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
       hihatPattern = [rrand(0.6, 0.9), 1, 0.8, 1, 1, 1, rrand(0.6, 0.9), 1, 1, rrand(0.6, 0.9), 1, rrand(0.6, 0.9), 1, 1, 1, 1]
@@ -277,39 +281,39 @@ with_fx :hpf, cutoff: 0, cutoff_slide: 0.5, amp: 1.5 do |lowKillSwitch|
   end
   
   live_loop :note1OSC do
-    osc1=sync "/osc/note1"
+    osc1=sync "/osc*/note1"
     nuotit[0] = osc1[0]
   end
   live_loop :note2OSC do
-    osc2=sync "/osc/note2"
+    osc2=sync "/osc*/note2"
     nuotit[1] = osc2[0]
   end
   live_loop :note3OSC do
-    osc3=sync "/osc/note3"
+    osc3=sync "/osc*/note3"
     nuotit[2] = osc3[0]
   end
   live_loop :note4OSC do
-    osc4=sync "/osc/note4"
+    osc4=sync "/osc*/note4"
     nuotit[3] = osc4[0]
   end
   live_loop :note5OSC do
-    osc5=sync "/osc/note5"
+    osc5=sync "/osc*/note5"
     nuotit[4] = osc5[0]
   end
   live_loop :note6OSC do
-    osc6=sync "/osc/note6"
+    osc6=sync "/osc*/note6"
     nuotit[5] = osc6[0]
   end
   live_loop :note7OSC do
-    osc7=sync "/osc/note7"
+    osc7=sync "/osc*/note7"
     nuotit[6] = osc7[0]
   end
   live_loop :note8OSC do
-    osc8=sync "/osc/note8"
+    osc8=sync "/osc*/note8"
     nuotit[7] = osc8[0]
   end
   live_loop :lowKillOSC do
-    osc=sync "/osc/lowkill"
+    osc=sync "/osc*/lowkill"
     if (osc[0] == 0)
       lowKill = 0
     elsif (osc[0] == 1)
